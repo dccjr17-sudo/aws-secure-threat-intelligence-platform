@@ -1,0 +1,42 @@
+# AWS Secure Threat Intelligence Platform
+
+> Private, portfolio-oriented lab repository. This repository contains deliberately sanitized technical notes and selected redacted evidence only.
+
+## Purpose
+
+This hands-on AWS lab builds a secure foundation for a future threat-intelligence platform. It is designed to demonstrate practical security engineering decisions, implementation evidence, and clear operational documentation without disclosing account-specific information.
+
+## Current status
+
+**Completed: Phase 0 — Secure AWS Account Foundation**
+
+- Secured the AWS root user with phishing-resistant multi-factor authentication (MFA).
+- Confirmed that the root user has no access keys.
+- Configured an AWS IAM Identity Center organization instance in `us-west-2`, using AWS-owned encryption.
+- Implemented group-based administrative access with permission sets and MFA.
+- Validated federated administrative access through AWS Security Token Service (STS).
+
+**Next:** establish cost guardrails (AWS Budgets, billing alerts, cost anomaly detection, and cost / Free Tier visibility) before provisioning threat-intelligence services.
+
+## Documentation map
+
+- [`docs/phase-0/`](docs/phase-0/) — sanitized record of the secure account foundation.
+- [`docs/lab-journal.md`](docs/lab-journal.md) — concise running log for future lab sessions.
+- [`images/`](images/) — intentional, redacted portfolio screenshots only.
+- [`resume/`](resume/) — resume bullets and interview talking points maintained as work progresses.
+
+## Security and privacy rules
+
+This repository must never contain real credentials, account identifiers, private console URLs, personal identifiers, raw logs, or unredacted screenshots. Read the [image sanitization rules](images/README.md) and the [contribution guide](CONTRIBUTING.md) before adding evidence.
+
+## Planned progression
+
+1. Cost guardrails and billing visibility
+2. Secure baseline services and least-privilege access
+3. Threat-intelligence data ingestion and normalization
+4. Detection, alerting, investigation, and response workflows
+5. Portfolio polish, architecture diagrams, and final resume evidence
+
+## Portfolio note
+
+This is an educational lab, not a production service. Documentation describes what was implemented and verified in the lab environment; it does not expose live configuration values.

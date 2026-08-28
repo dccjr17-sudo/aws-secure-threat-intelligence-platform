@@ -1,0 +1,27 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+credentials
+config
+aws-credentials*
+
+# Raw or exported evidence — retain only intentionally reviewed files in images/
+raw-screenshots/
+screenshots-raw/
+exports/
+logs/
+*.log
+*.har
+
+# Editor and operating-system files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
