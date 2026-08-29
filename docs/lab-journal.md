@@ -27,6 +27,15 @@ Use this file for short, outcome-focused updates after each lab session. Do not 
 - Evidence added: sanitized configuration record only; no bucket name, identifier, screenshots, or feed data.
 - Next step: create the DynamoDB indicator table with a minimal access model.
 
+## 2026-08-29 — Phase 2 normalized-indicator table established
+
+- Created and validated an empty DynamoDB Standard table for normalized threat-intelligence indicators.
+- Defined a single `cve_id` string partition key and intentionally omitted a sort key for the initial CISA KEV feed model.
+- Retained on-demand read and write capacity and AWS-owned encryption; no secondary indexes, replica Regions, or resource-based policy were configured.
+- Deferred deletion protection while the table is empty and the lab build is still changing.
+- Evidence added: sanitized configuration record only; no table name, identifier, screenshots, or feed data.
+- Next step: create separate least-privilege Lambda execution roles for ingestion and normalization.
+
 ## Future entry template
 
 ```markdown
