@@ -1,6 +1,6 @@
 # Phase 2 — Architecture and Secure Data Foundation
 
-**Status:** In progress. The private raw-data and normalized-data foundations are deployed and validated; the processing and scheduling components are not yet deployed.
+**Status:** In progress. The private raw-data and normalized-data foundations, plus their least-privilege execution roles, are deployed and validated; the processing and scheduling components are not yet deployed.
 
 ## Objective
 
@@ -31,7 +31,7 @@ flowchart LR
 | Data ingress | Outbound HTTPS retrieval from one public source; no public upload endpoint |
 | Raw storage | Private S3 bucket with Block Public Access enabled, ACLs disabled, bucket-owner-enforced ownership, versioning, and SSE-S3 encryption |
 | Data lifecycle | `raw/` objects expire after 30 days; noncurrent versions and incomplete multipart uploads are removed after 7 days |
-| Processing | Two dedicated Lambda functions with separate least-privilege execution roles; no long-lived access keys |
+| Processing | Two dedicated Lambda execution roles: ingest can write only to the raw prefix; normalize can read that prefix and write normalized records; both have logging only beyond their assigned data access |
 | Data store | DynamoDB table with a `cve_id` string primary key, on-demand mode, AWS-owned encryption, and no secondary indexes |
 | Scheduling | One low-frequency scheduled ingestion run while the lab is developing |
 | Logging | CloudWatch Logs with a short, deliberate retention period |
@@ -41,7 +41,7 @@ flowchart LR
 
 1. Create the private raw-data S3 bucket and verify its security controls. **Completed 2026-08-29.**
 2. Define the DynamoDB indicator table and its access model. **Completed 2026-08-29.**
-3. Create narrowly scoped Lambda execution roles.
+3. Create narrowly scoped Lambda execution roles. **Completed 2026-08-29.**
 4. Deploy and test ingestion with a manually invoked Lambda function.
 5. Add normalization, then add the schedule only after manual validation.
 6. Add metrics, alerting, and a documented cleanup procedure.
@@ -73,5 +73,16 @@ The normalized-indicator table was created empty and validated before any ingest
 - No local or global secondary indexes, replica Regions, or resource-based policy were created.
 - Deletion protection remains off while the table is empty and the lab design is still evolving; it will be reconsidered once the ingestion path is validated.
 
-The next resource is a pair of dedicated Lambda execution roles. No threat-intelligence data has been ingested yet.
+The least-privilege execution roles were then established. No threat-intelligence data has been ingested yet.
+
+## Completed execution-role foundation
+
+Two distinct Lambda-trusted execution roles were created for the planned functions. Both retain the AWS-managed basic execution policy for CloudWatch Logs and have no long-lived access keys.
+
+- The ingestion role has one inline permission: write objects only to the private S3 `raw/` prefix. It cannot read, list, or delete S3 objects.
+- The normalization role can read objects only from that same S3 prefix and write normalized records only to the indicator table. It has no scan, delete, or broad data-store permissions.
+- No administrative, broader S3 or DynamoDB, or cross-account permissions were attached.
+- Roles were tagged for project, environment, and component ownership.
+
+The next implementation step is to deploy and manually test the ingestion Lambda function. No threat-intelligence data has been ingested yet.
 
