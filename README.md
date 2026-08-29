@@ -26,7 +26,8 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 **In progress: Phase 2 — Architecture and Secure Data Foundation**
 
 - Defined a low-cost serverless design using a public CISA vulnerability feed, private raw storage, normalized indicator data, narrowly scoped processing roles, and operational logging.
-- The first deployment step is a private S3 raw-data bucket; no workload resources have been deployed yet.
+- Deployed and validated the private S3 raw-data bucket with public access blocked, bucket-owner-enforced ownership, versioning, SSE-S3 encryption, portfolio tags, and a cost-control lifecycle rule limited to the future `raw/` data prefix.
+- No threat-intelligence data has been uploaded or ingested. The next deployment step is the DynamoDB indicator table.
 
 ## Documentation map
 
@@ -52,3 +53,4 @@ This repository must never contain real credentials, account identifiers, privat
 ## Portfolio note
 
 This is an educational lab, not a production service. Documentation describes what was implemented and verified in the lab environment; it does not expose live configuration values.
+
