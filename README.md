@@ -37,6 +37,7 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 - [`docs/phase-1-cost-guardrails/`](docs/phase-1-cost-guardrails/) — budget, anomaly-detection, and Free Tier visibility record.
 - [`docs/phase-2-architecture/`](docs/phase-2-architecture/) — approved low-cost serverless design and secure implementation sequence.
 - [`docs/lab-journal.md`](docs/lab-journal.md) — concise running log for future lab sessions.
+- [`src/ingest/`](src/ingest/) — dependency-free CISA KEV ingestion handler and deployment notes.
 - [`images/`](images/) — intentional, redacted portfolio screenshots only.
 - [`resume/`](resume/) — resume bullets and interview talking points maintained as work progresses.
 
