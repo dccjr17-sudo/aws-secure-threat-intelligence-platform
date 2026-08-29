@@ -45,6 +45,13 @@ Use this file for short, outcome-focused updates after each lab session. Do not 
 - Evidence added: sanitized policy-scope record only; no role names, ARNs, bucket names, table ARNs, screenshots, or feed data.
 - Next step: deploy and manually test the ingestion Lambda function.
 
+## 2026-08-29 — Ingestion handler prepared for deployment
+
+- Added a dependency-free Python handler that retrieves the public CISA KEV feed, enforces a response-size limit, validates JSON structure, calculates a checksum, and writes only to the raw-data prefix.
+- Kept the bucket name and all live configuration out of source control; the handler requires a console-only environment variable at deployment time.
+- Performed a local Python syntax check before deployment.
+- Next step: create the Lambda function, configure the private bucket environment variable, and perform one manual test invocation.
+
 ## Future entry template
 
 ```markdown
