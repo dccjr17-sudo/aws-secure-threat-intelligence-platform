@@ -16,11 +16,19 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 - Implemented group-based administrative access with permission sets and MFA.
 - Validated federated administrative access through AWS Security Token Service (STS).
 
-**Next:** establish cost guardrails (AWS Budgets, billing alerts, cost anomaly detection, and cost / Free Tier visibility) before provisioning threat-intelligence services.
+**Completed: Phase 1 — Cost Guardrails and Billing Visibility**
+
+- Created an all-services monthly AWS Budget with email-only thresholds and no automated actions.
+- Enabled billing access for federated administrative sessions through the root-only account setting.
+- Verified the AWS-managed all-services Cost Anomaly Detection monitor and tuned its daily email threshold for a small lab environment.
+- Reviewed AWS Free Tier usage and confirmed no active offer was near a usage limit.
+
+**Next:** establish secure baseline services and least-privilege access before provisioning threat-intelligence workloads.
 
 ## Documentation map
 
 - [`docs/phase-0/`](docs/phase-0/) — sanitized record of the secure account foundation.
+- [`docs/phase-1-cost-guardrails/`](docs/phase-1-cost-guardrails/) — budget, anomaly-detection, and Free Tier visibility record.
 - [`docs/lab-journal.md`](docs/lab-journal.md) — concise running log for future lab sessions.
 - [`images/`](images/) — intentional, redacted portfolio screenshots only.
 - [`resume/`](resume/) — resume bullets and interview talking points maintained as work progresses.
