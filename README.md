@@ -23,12 +23,16 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 - Verified the AWS-managed all-services Cost Anomaly Detection monitor and tuned its daily email threshold for a small lab environment.
 - Reviewed AWS Free Tier usage and confirmed no active offer was near a usage limit.
 
-**Next:** establish secure baseline services and least-privilege access before provisioning threat-intelligence workloads.
+**In progress: Phase 2 — Architecture and Secure Data Foundation**
+
+- Defined a low-cost serverless design using a public CISA vulnerability feed, private raw storage, normalized indicator data, narrowly scoped processing roles, and operational logging.
+- The first deployment step is a private S3 raw-data bucket; no workload resources have been deployed yet.
 
 ## Documentation map
 
 - [`docs/phase-0/`](docs/phase-0/) — sanitized record of the secure account foundation.
 - [`docs/phase-1-cost-guardrails/`](docs/phase-1-cost-guardrails/) — budget, anomaly-detection, and Free Tier visibility record.
+- [`docs/phase-2-architecture/`](docs/phase-2-architecture/) — approved low-cost serverless design and secure implementation sequence.
 - [`docs/lab-journal.md`](docs/lab-journal.md) — concise running log for future lab sessions.
 - [`images/`](images/) — intentional, redacted portfolio screenshots only.
 - [`resume/`](resume/) — resume bullets and interview talking points maintained as work progresses.
