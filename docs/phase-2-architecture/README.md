@@ -86,3 +86,13 @@ Two distinct Lambda-trusted execution roles were created for the planned functio
 
 The next implementation step is to deploy and manually test the ingestion Lambda function. No threat-intelligence data has been ingested yet.
 
+## Prepared ingestion implementation
+
+The dependency-free Python handler is source-controlled in [`src/ingest/`](../../src/ingest/). It is intentionally not configured with any live values in this repository.
+
+- Retrieves one bounded response from the public CISA KEV JSON source over HTTPS.
+- Validates the expected JSON shape before it writes to S3.
+- Writes a checksummed raw record only under the dedicated `raw/` prefix with SSE-S3 requested.
+- Requires the private raw bucket name through a Lambda environment variable configured in the console, not source code.
+- Has not yet been deployed or invoked in AWS.
+
