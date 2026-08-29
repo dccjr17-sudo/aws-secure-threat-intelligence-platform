@@ -1,6 +1,6 @@
 # Phase 2 — Architecture and Secure Data Foundation
 
-**Status:** In progress. The private raw-data and normalized-data foundations, plus their least-privilege execution roles, are deployed and validated; the processing and scheduling components are not yet deployed.
+**Status:** In progress. The private raw-data and normalized-data foundations, least-privilege execution roles, and manually tested ingestion function are deployed and validated; normalization and scheduling are not yet deployed.
 
 ## Objective
 
@@ -42,7 +42,7 @@ flowchart LR
 1. Create the private raw-data S3 bucket and verify its security controls. **Completed 2026-08-29.**
 2. Define the DynamoDB indicator table and its access model. **Completed 2026-08-29.**
 3. Create narrowly scoped Lambda execution roles. **Completed 2026-08-29.**
-4. Deploy and test ingestion with a manually invoked Lambda function.
+4. Deploy and test ingestion with a manually invoked Lambda function. **Completed 2026-08-29.**
 5. Add normalization, then add the schedule only after manual validation.
 6. Add metrics, alerting, and a documented cleanup procedure.
 
@@ -94,5 +94,16 @@ The dependency-free Python handler is source-controlled in [`src/ingest/`](../..
 - Validates the expected JSON shape before it writes to S3.
 - Writes a checksummed raw record only under the dedicated `raw/` prefix with SSE-S3 requested.
 - Requires the private raw bucket name through a Lambda environment variable configured in the console, not source code.
-- Has not yet been deployed or invoked in AWS.
+- Was prepared without live configuration values before deployment; deployment and validation results follow.
+
+## Completed ingestion validation
+
+The ingestion function was deployed with the dedicated ingestion role and validated through one manual invocation.
+
+- The function retrieved the public CISA KEV JSON feed and created one raw snapshot below the private S3 `raw/` prefix.
+- The successful response confirmed source identity, a catalog version, object-key location, a SHA-256 checksum, and byte count. Those execution-specific values are intentionally not preserved here.
+- The initial configuration error was limited to a nonmatching bucket environment value; correcting the console-only value allowed the next invocation to succeed without broadening the role permissions.
+- The function has no public function URL and no VPC attachment. No source payload, event details, execution identifiers, or log output are committed to this repository.
+
+The next implementation step is the normalization Lambda function. No normalized indicator records have been written yet.
 
