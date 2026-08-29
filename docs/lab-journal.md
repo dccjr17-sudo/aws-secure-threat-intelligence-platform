@@ -52,6 +52,15 @@ Use this file for short, outcome-focused updates after each lab session. Do not 
 - Performed a local Python syntax check before deployment.
 - Next step: create the Lambda function, configure the private bucket environment variable, and perform one manual test invocation.
 
+## 2026-08-29 — CISA KEV ingestion Lambda manually validated
+
+- Deployed the source-controlled, dependency-free ingestion handler using the dedicated ingestion execution role.
+- Configured the private raw bucket through a console-only environment variable; no live value was added to source control.
+- Manually invoked the function and verified that it retrieved the public CISA KEV JSON feed and stored one checksummed raw snapshot under the protected raw-data prefix.
+- Corrected an initial nonmatching bucket environment value without broadening the function role or changing its code.
+- Evidence added: sanitized success outcome only; no payload, object key, checksum, request identifier, logs, screenshots, bucket name, or account identifier.
+- Next step: create and manually validate the normalization Lambda function.
+
 ## Future entry template
 
 ```markdown
