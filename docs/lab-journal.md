@@ -36,6 +36,15 @@ Use this file for short, outcome-focused updates after each lab session. Do not 
 - Evidence added: sanitized configuration record only; no table name, identifier, screenshots, or feed data.
 - Next step: create separate least-privilege Lambda execution roles for ingestion and normalization.
 
+## 2026-08-29 — Phase 2 least-privilege execution roles established
+
+- Created separate Lambda-trusted execution roles for ingestion and normalization, each with CloudWatch Logs basic execution access only.
+- Limited the ingestion role to writing objects under the private raw-data prefix.
+- Limited the normalization role to reading that prefix and writing normalized records to the indicator table.
+- Did not attach administrative, broader S3 or DynamoDB, cross-account, list, scan, or delete permissions.
+- Evidence added: sanitized policy-scope record only; no role names, ARNs, bucket names, table ARNs, screenshots, or feed data.
+- Next step: deploy and manually test the ingestion Lambda function.
+
 ## Future entry template
 
 ```markdown
