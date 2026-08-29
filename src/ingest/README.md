@@ -38,3 +38,7 @@ Optional environment variables:
 
 Use an empty JSON event such as `{}` for the initial manual invocation. A successful run creates one object below the `raw/cisa-kev/` prefix. Do not add the resulting object or raw feed to this repository.
 
+## Validation status
+
+The handler was deployed and successfully manually invoked in the lab. Execution-specific output, raw object contents, logs, checksums, and identifiers are intentionally not retained in this repository.
+
