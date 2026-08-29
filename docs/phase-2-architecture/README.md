@@ -1,6 +1,6 @@
 # Phase 2 — Architecture and Secure Data Foundation
 
-**Status:** In progress. The private raw-data storage foundation is deployed and validated; the compute and normalized-data components are not yet deployed.
+**Status:** In progress. The private raw-data and normalized-data foundations are deployed and validated; the processing and scheduling components are not yet deployed.
 
 ## Objective
 
@@ -32,7 +32,7 @@ flowchart LR
 | Raw storage | Private S3 bucket with Block Public Access enabled, ACLs disabled, bucket-owner-enforced ownership, versioning, and SSE-S3 encryption |
 | Data lifecycle | `raw/` objects expire after 30 days; noncurrent versions and incomplete multipart uploads are removed after 7 days |
 | Processing | Two dedicated Lambda functions with separate least-privilege execution roles; no long-lived access keys |
-| Data store | DynamoDB on-demand mode for normalized records; no provisioned capacity |
+| Data store | DynamoDB table with a `cve_id` string primary key, on-demand mode, AWS-owned encryption, and no secondary indexes |
 | Scheduling | One low-frequency scheduled ingestion run while the lab is developing |
 | Logging | CloudWatch Logs with a short, deliberate retention period |
 | Cost exclusions | No EC2, NAT gateway, OpenSearch, third-party feeds, managed database, public API, or automated remediation in this initial build |
@@ -40,7 +40,7 @@ flowchart LR
 ## Implementation sequence
 
 1. Create the private raw-data S3 bucket and verify its security controls. **Completed 2026-08-29.**
-2. Define the DynamoDB indicator table and its access model.
+2. Define the DynamoDB indicator table and its access model. **Completed 2026-08-29.**
 3. Create narrowly scoped Lambda execution roles.
 4. Deploy and test ingestion with a manually invoked Lambda function.
 5. Add normalization, then add the schedule only after manual validation.
@@ -61,5 +61,17 @@ The raw-data archive was created in `us-west-2` and validated before any feed da
 - Portfolio tags applied: `Project=aws-threat-intel`, `Environment=lab`, and `DataClass=public-threat-intel`.
 - Lifecycle rule is limited to the future `raw/` prefix: current objects expire after 30 days, noncurrent versions are permanently removed after 7 days, and incomplete multipart uploads are aborted after 7 days.
 
-The next resource will be the DynamoDB indicator table. No threat-intelligence data has been ingested yet.
+The normalized-data foundation was then established. No threat-intelligence data has been ingested yet.
+
+## Completed normalized-data foundation
+
+The normalized-indicator table was created empty and validated before any ingestion code was deployed.
+
+- A single `cve_id` string partition key maps one normalized record to each CVE identifier; no sort key is needed for the initial feed.
+- On-demand read and write capacity avoids pre-provisioned throughput for this small, developing lab.
+- DynamoDB Standard table class with AWS-owned encryption was retained.
+- No local or global secondary indexes, replica Regions, or resource-based policy were created.
+- Deletion protection remains off while the table is empty and the lab design is still evolving; it will be reconsidered once the ingestion path is validated.
+
+The next resource is a pair of dedicated Lambda execution roles. No threat-intelligence data has been ingested yet.
 
