@@ -23,6 +23,25 @@ Secured an AWS lab account by enabling phishing-resistant MFA for the root user,
 - How group-based access and permission sets make authorization more repeatable and auditable.
 - How the repository avoids oversharing sensitive cloud environment details while preserving useful evidence.
 
+### Phase 1 — Cost Guardrails and Billing Visibility
+
+**Evidence-backed summary**
+
+Implemented practical cost controls for an AWS security lab: a monthly all-services budget with tiered actual-cost email alerts, AWS-managed service-level anomaly detection with a low-impact daily alert threshold, and Free Tier usage review. Enabled federated billing visibility through the root-only account setting while keeping root use exceptional.
+
+**Resume-bullet candidates**
+
+- Implemented AWS cost guardrails using a monthly all-services budget with tiered email thresholds, avoiding automated remediation actions in a learning environment.
+- Configured AWS Cost Anomaly Detection for all services and tuned daily alerts to surface small unexpected spend; verified Free Tier usage remained within limits.
+- Delegated billing visibility to federated administrative access through the root-only IAM access setting, preserving root credentials for exceptional account tasks.
+
+**Interview talking points**
+
+- Why a budget is an alerting control rather than a hard spending cap.
+- Why a small lab needs lower anomaly thresholds than a production environment.
+- Why enabling billing access for federated roles improves routine operations while root access remains exceptional.
+- Why all notifications were email-only and no automated budget action was attached during early lab work.
+
 ## Update template
 
 For each phase, add:
@@ -31,4 +50,3 @@ For each phase, add:
 - One or two results-oriented resume bullets
 - The security decision and its rationale
 - A limitation or follow-up to discuss honestly in interviews
-
