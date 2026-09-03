@@ -29,7 +29,7 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 - Deployed and validated the private S3 raw-data bucket with public access blocked, bucket-owner-enforced ownership, versioning, SSE-S3 encryption, portfolio tags, and a cost-control lifecycle rule limited to the future `raw/` data prefix.
 - Deployed and validated an empty DynamoDB indicator table using a `cve_id` string key, on-demand capacity, AWS-owned encryption, and no secondary indexes.
 - Created distinct Lambda execution roles with only CloudWatch logging plus narrowly scoped S3 and DynamoDB data permissions appropriate to their individual duties.
-- Deployed and manually validated a CISA KEV ingestion Lambda that retrieved the public JSON feed and stored one private, raw snapshot with a checksum.
+- Deployed and manually validated a CISA KEV ingestion Lambda that retrieved the public JSON feed and stored one private, raw snapshot with a checksum; its operational log group retains events for 14 days.
 - The next deployment step is the normalization Lambda; no normalized indicator records have been written yet.
 
 ## Documentation map
