@@ -49,4 +49,10 @@ After deploying the function, create a Lambda test event from the **Amazon S3 pu
 
 ## Validation status
 
-Source is prepared for deployment. The function has not yet been deployed or invoked, and no normalized indicator records have been recorded in this repository.
+The function was deployed with the dedicated role and validated in two stages:
+
+1. A manually supplied Amazon S3 put event for one protected raw CISA KEV snapshot completed successfully and wrote normalized records to the existing DynamoDB table.
+2. An S3 object-created trigger, limited to `raw/cisa-kev/` and `.json`, was added. A new snapshot from the ingestion function then invoked normalization automatically and completed without an error entry in CloudWatch Logs.
+
+The function's CloudWatch log group uses the Standard log class with 14-day retention. The exact object location, record count, log output, table name, and other live values are intentionally not recorded here.
+
