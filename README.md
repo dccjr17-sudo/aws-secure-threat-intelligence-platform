@@ -30,7 +30,7 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 - Deployed and validated an empty DynamoDB indicator table using a `cve_id` string key, on-demand capacity, AWS-owned encryption, and no secondary indexes.
 - Created distinct Lambda execution roles with only CloudWatch logging plus narrowly scoped S3 and DynamoDB data permissions appropriate to their individual duties.
 - Deployed and manually validated a CISA KEV ingestion Lambda that retrieved the public JSON feed and stored one private, raw snapshot with a checksum; its operational log group retains events for 14 days.
-- The next deployment step is the normalization Lambda; no normalized indicator records have been written yet.
+- Prepared a source-controlled normalization Lambda that will transform approved raw CISA KEV snapshots into idempotent DynamoDB indicator records; deployment and validation are pending.
 
 ## Documentation map
 
@@ -39,6 +39,7 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 - [`docs/phase-2-architecture/`](docs/phase-2-architecture/) — approved low-cost serverless design and secure implementation sequence.
 - [`docs/lab-journal.md`](docs/lab-journal.md) — concise running log for future lab sessions.
 - [`src/ingest/`](src/ingest/) — dependency-free CISA KEV ingestion handler and deployment notes.
+- [`src/normalize/`](src/normalize/) — dependency-free CISA KEV normalization handler and deployment notes.
 - [`images/`](images/) — intentional, redacted portfolio screenshots only.
 - [`resume/`](resume/) — resume bullets and interview talking points maintained as work progresses.
 
@@ -57,4 +58,3 @@ This repository must never contain real credentials, account identifiers, privat
 ## Portfolio note
 
 This is an educational lab, not a production service. Documentation describes what was implemented and verified in the lab environment; it does not expose live configuration values.
-
