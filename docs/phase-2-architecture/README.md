@@ -1,6 +1,6 @@
 # Phase 2 — Architecture and Secure Data Foundation
 
-**Status:** In progress. The private raw-data and normalized-data foundations, least-privilege execution roles, and manually tested ingestion function are deployed and validated; normalization and scheduling are not yet deployed.
+**Status:** Completed. The private raw-data and normalized-data foundations, least-privilege execution roles, ingestion function, normalization function, S3 event path, and daily scheduler are deployed and validated.
 
 ## Objective
 
@@ -33,7 +33,7 @@ flowchart LR
 | Data lifecycle | `raw/` objects expire after 30 days; noncurrent versions and incomplete multipart uploads are removed after 7 days |
 | Processing | Two dedicated Lambda execution roles: ingest can write only to the raw prefix; normalize can read that prefix and batch-write normalized records; both have logging only beyond their assigned data access |
 | Data store | DynamoDB table with a `cve_id` string primary key, on-demand mode, AWS-owned encryption, and no secondary indexes |
-| Scheduling | One low-frequency scheduled ingestion run while the lab is developing |
+| Scheduling | One enabled EventBridge Scheduler run each day at 8:15 AM Pacific, with its own least-privilege invocation role and no flexible time window |
 | Logging | CloudWatch Logs with a 14-day retention period |
 | Cost exclusions | No EC2, NAT gateway, OpenSearch, third-party feeds, managed database, public API, or automated remediation in this initial build |
 
@@ -43,8 +43,9 @@ flowchart LR
 2. Define the DynamoDB indicator table and its access model. **Completed 2026-08-29.**
 3. Create narrowly scoped Lambda execution roles. **Completed 2026-08-29.**
 4. Deploy and test ingestion with a manually invoked Lambda function. **Completed 2026-08-29.**
-5. Add normalization, then add the schedule only after manual validation.
-6. Add metrics, alerting, and a documented cleanup procedure.
+5. Deploy and manually validate normalization, then add the S3 object-created trigger. **Completed 2026-09-03.**
+6. Add the low-frequency daily scheduler after the full S3-triggered path succeeds. **Completed 2026-09-03.**
+7. Next: add metrics, alerting, and a documented cleanup procedure.
 
 ## Evidence rules
 
@@ -106,7 +107,7 @@ The ingestion function was deployed with the dedicated ingestion role and valida
 - The initial configuration error was limited to a nonmatching bucket environment value; correcting the console-only value allowed the next invocation to succeed without broadening the role permissions.
 - The function has no public function URL and no VPC attachment. No source payload, event details, execution identifiers, or log output are committed to this repository.
 
-The next implementation step is the normalization Lambda function. No normalized indicator records have been written yet.
+The next implementation step was the normalization Lambda function and its event path.
 
 ## Prepared normalization implementation
 
@@ -118,4 +119,23 @@ The dependency-free normalization handler is source-controlled in [`src/normaliz
 - Requires the indicator table name through a Lambda environment variable configured in the console, not source code.
 - Requires only the already established S3 read and narrowly scoped DynamoDB `PutItem`/`BatchWriteItem` permissions.
 
-The next implementation step is to deploy and manually validate the normalization Lambda function. No normalized indicator records have been written yet.
+## Completed normalization and event-path validation
+
+The normalization function was deployed with the dedicated normalization role and verified before automation was enabled.
+
+- A manually supplied Amazon S3 put event for one protected raw snapshot completed successfully and wrote normalized CVE-keyed records to DynamoDB.
+- Its CloudWatch log group uses the Standard log class with 14-day retention. Deletion protection remains off for this short-lived lab workload.
+- An S3 object-created trigger is limited to the private `raw/cisa-kev/` prefix and `.json` suffix. Lambda added the resource permission that allows only this configured S3 notification to invoke the function.
+- A second ingestion invocation created a new raw snapshot and automatically invoked normalization. CloudWatch Logs confirmed a normal completion with no error entries.
+- Reprocessing remains idempotent because writes use `cve_id` as the DynamoDB key.
+
+## Completed scheduled operation
+
+One enabled EventBridge Scheduler schedule invokes the ingestion function every day at 8:15 AM in the `America/Los_Angeles` time zone.
+
+- The schedule uses a dedicated invocation role created for the scheduler; it does not reuse either Lambda execution role.
+- Flexible time windows are disabled so the target is invoked at the intended daily time.
+- The ingestion function accepts the scheduler's empty JSON event and continues to retrieve the public CISA KEV source. Its S3 write then begins the already-validated normalization path.
+
+No live resource identifiers, source payloads, raw data, event payloads, request identifiers, or log output are preserved in this repository.
+
