@@ -34,7 +34,7 @@ flowchart LR
 | Processing | Two dedicated Lambda execution roles: ingest can write only to the raw prefix; normalize can read that prefix and write normalized records; both have logging only beyond their assigned data access |
 | Data store | DynamoDB table with a `cve_id` string primary key, on-demand mode, AWS-owned encryption, and no secondary indexes |
 | Scheduling | One low-frequency scheduled ingestion run while the lab is developing |
-| Logging | CloudWatch Logs with a short, deliberate retention period |
+| Logging | CloudWatch Logs with a 14-day retention period |
 | Cost exclusions | No EC2, NAT gateway, OpenSearch, third-party feeds, managed database, public API, or automated remediation in this initial build |
 
 ## Implementation sequence
@@ -102,6 +102,7 @@ The ingestion function was deployed with the dedicated ingestion role and valida
 
 - The function retrieved the public CISA KEV JSON feed and created one raw snapshot below the private S3 `raw/` prefix.
 - The successful response confirmed source identity, a catalog version, object-key location, a SHA-256 checksum, and byte count. Those execution-specific values are intentionally not preserved here.
+- Its CloudWatch log group uses the Standard log class with 14-day retention. Deletion protection remains off for this short-lived lab workload.
 - The initial configuration error was limited to a nonmatching bucket environment value; correcting the console-only value allowed the next invocation to succeed without broadening the role permissions.
 - The function has no public function URL and no VPC attachment. No source payload, event details, execution identifiers, or log output are committed to this repository.
 
