@@ -34,6 +34,11 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 - Configured an S3 object-created trigger limited to the approved raw CISA KEV prefix and JSON files, then verified the complete ingest-to-normalize path through CloudWatch Logs.
 - Configured one enabled EventBridge Scheduler job to begin the daily ingestion run at 8:15 AM Pacific, with a dedicated scheduler invocation role and no flexible time window.
 
+**Preparing: Phase 3 — Finding Enrichment and Triage**
+
+- Added a source-controlled, dependency-free enrichment handler that accepts one CVE-bearing finding and performs an exact read of the normalized indicator table.
+- The handler deliberately returns only compact KEV context, never scans or changes DynamoDB, and has not yet been deployed or connected to an event source.
+
 ## Documentation map
 
 - [`docs/phase-0/`](docs/phase-0/) — sanitized record of the secure account foundation.
@@ -42,6 +47,7 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 - [`docs/lab-journal.md`](docs/lab-journal.md) — concise running log for future lab sessions.
 - [`src/ingest/`](src/ingest/) — dependency-free CISA KEV ingestion handler and deployment notes.
 - [`src/normalize/`](src/normalize/) — dependency-free CISA KEV normalization handler and deployment notes.
+- [`src/enrich/`](src/enrich/) — dependency-free read-only CVE finding-enrichment handler and deployment notes.
 - [`images/`](images/) — intentional, redacted portfolio screenshots only.
 - [`resume/`](resume/) — resume bullets and interview talking points maintained as work progresses.
 
