@@ -23,14 +23,16 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 - Verified the AWS-managed all-services Cost Anomaly Detection monitor and tuned its daily email threshold for a small lab environment.
 - Reviewed AWS Free Tier usage and confirmed no active offer was near a usage limit.
 
-**In progress: Phase 2 — Architecture and Secure Data Foundation**
+**Completed: Phase 2 — Architecture and Secure Data Foundation**
 
 - Defined a low-cost serverless design using a public CISA vulnerability feed, private raw storage, normalized indicator data, narrowly scoped processing roles, and operational logging.
 - Deployed and validated the private S3 raw-data bucket with public access blocked, bucket-owner-enforced ownership, versioning, SSE-S3 encryption, portfolio tags, and a cost-control lifecycle rule limited to the future `raw/` data prefix.
 - Deployed and validated an empty DynamoDB indicator table using a `cve_id` string key, on-demand capacity, AWS-owned encryption, and no secondary indexes.
 - Created distinct Lambda execution roles with only CloudWatch logging plus narrowly scoped S3 and DynamoDB data permissions appropriate to their individual duties.
-- Deployed and manually validated a CISA KEV ingestion Lambda that retrieved the public JSON feed and stored one private, raw snapshot with a checksum; its operational log group retains events for 14 days.
-- Prepared a source-controlled normalization Lambda that will transform approved raw CISA KEV snapshots into idempotent DynamoDB indicator records; deployment and validation are pending.
+- Deployed and manually validated a CISA KEV ingestion Lambda that retrieves the public JSON feed and stores private, checksummed raw snapshots; its operational log group retains events for 14 days.
+- Deployed and validated a source-controlled normalization Lambda that transforms approved raw CISA KEV snapshots into idempotent DynamoDB indicator records; its log group also retains events for 14 days.
+- Configured an S3 object-created trigger limited to the approved raw CISA KEV prefix and JSON files, then verified the complete ingest-to-normalize path through CloudWatch Logs.
+- Configured one enabled EventBridge Scheduler job to begin the daily ingestion run at 8:15 AM Pacific, with a dedicated scheduler invocation role and no flexible time window.
 
 ## Documentation map
 
@@ -58,3 +60,4 @@ This repository must never contain real credentials, account identifiers, privat
 ## Portfolio note
 
 This is an educational lab, not a production service. Documentation describes what was implemented and verified in the lab environment; it does not expose live configuration values.
+
