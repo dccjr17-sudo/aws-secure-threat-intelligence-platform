@@ -1,4 +1,3 @@
-
 # Lab Journal
 
 Use this file for short, outcome-focused updates after each lab session. Do not paste raw command output, console URLs, screenshots, or identifiers.
@@ -69,6 +68,15 @@ Use this file for short, outcome-focused updates after each lab session. Do not 
 - Evidence added: sanitized retention configuration only; no log-group name, account identifier, request identifier, payload, or logs.
 - Next step: create and manually validate the normalization Lambda function.
 
+## 2026-09-03 — Normalization handler prepared for deployment
+
+- Updated the dedicated normalization role to permit batch writes only to the already restricted indicator table; the existing raw-prefix S3 read scope was unchanged.
+- Added a dependency-free normalization handler that validates an S3-triggered CISA KEV raw snapshot and writes compact, idempotent indicator records keyed by CVE identifier.
+- Kept live bucket and table values out of source control; the handler requires only a console-configured table-name environment variable.
+- Performed a local syntax check before deployment.
+- Evidence added: source and sanitized deployment notes only; no bucket name, table name, identifier, event, raw data, logs, or screenshots.
+- Next step: deploy and manually validate the normalization Lambda function.
+
 ## Future entry template
 
 ```markdown
@@ -81,4 +89,3 @@ Use this file for short, outcome-focused updates after each lab session. Do not 
 - Evidence added (sanitized only):
 - Next step:
 ```
-
