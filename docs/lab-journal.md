@@ -77,6 +77,16 @@ Use this file for short, outcome-focused updates after each lab session. Do not 
 - Evidence added: source and sanitized deployment notes only; no bucket name, table name, identifier, event, raw data, logs, or screenshots.
 - Next step: deploy and manually validate the normalization Lambda function.
 
+## 2026-09-03 — Normalization Lambda and automated data path validated
+
+- Deployed the source-controlled normalization handler using the dedicated normalization execution role and configured its indicator-table setting only in the Lambda console.
+- Manually validated the handler with an Amazon S3 put event referencing one protected raw snapshot; it wrote normalized, CVE-keyed records to the existing table.
+- Set the normalization function's CloudWatch log group to the Standard log class with 14-day retention and left deletion protection off for this developing lab workload.
+- Added an S3 object-created trigger limited to the private CISA KEV raw prefix and JSON files. A fresh manual ingestion run then invoked normalization automatically and completed successfully, confirming the full event path.
+- Added one enabled EventBridge Scheduler job that invokes ingestion every day at 8:15 AM Pacific. It uses a dedicated scheduler invocation role and no flexible time window.
+- Evidence added: sanitized outcome record only; no live resource names, account identifiers, event payloads, raw data, record counts, logs, screenshots, or scheduler identifiers.
+- Next step: add operational metrics, alerting, and a documented cleanup procedure.
+
 ## Future entry template
 
 ```markdown
@@ -89,3 +99,4 @@ Use this file for short, outcome-focused updates after each lab session. Do not 
 - Evidence added (sanitized only):
 - Next step:
 ```
+
