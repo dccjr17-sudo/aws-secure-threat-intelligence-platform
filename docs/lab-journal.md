@@ -87,6 +87,15 @@ Use this file for short, outcome-focused updates after each lab session. Do not 
 - Evidence added: sanitized outcome record only; no live resource names, account identifiers, event payloads, raw data, record counts, logs, screenshots, or scheduler identifiers.
 - Next step: add operational metrics, alerting, and a documented cleanup procedure.
 
+## 2026-09-03 — Finding-enrichment handler prepared for deployment
+
+- Added a dependency-free Lambda handler that accepts one CVE-bearing finding and looks up only that exact `cve_id` in the normalized indicator table.
+- The handler returns compact CISA KEV context for a match and a clear no-match result otherwise; it neither scans nor writes to DynamoDB.
+- Kept the table name as a console-only environment variable and prepared the dedicated role scope as CloudWatch logging plus `dynamodb:GetItem` on only the indicator table.
+- Performed a local syntax check and mocked match/no-match behavior checks without connecting to a live AWS resource.
+- Evidence added: source and sanitized deployment notes only; no live CVE value, table name, event, output, logs, or identifiers.
+- Next step: create the dedicated enrichment role, deploy the function, and perform one manual exact-key validation.
+
 ## Future entry template
 
 ```markdown
