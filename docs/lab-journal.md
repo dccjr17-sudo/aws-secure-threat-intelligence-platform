@@ -1,3 +1,4 @@
+
 # Lab Journal
 
 Use this file for short, outcome-focused updates after each lab session. Do not paste raw command output, console URLs, screenshots, or identifiers.
@@ -59,6 +60,13 @@ Use this file for short, outcome-focused updates after each lab session. Do not 
 - Manually invoked the function and verified that it retrieved the public CISA KEV JSON feed and stored one checksummed raw snapshot under the protected raw-data prefix.
 - Corrected an initial nonmatching bucket environment value without broadening the function role or changing its code.
 - Evidence added: sanitized success outcome only; no payload, object key, checksum, request identifier, logs, screenshots, bucket name, or account identifier.
+- Next step: create and manually validate the normalization Lambda function.
+
+## 2026-09-03 — Ingestion log retention configured
+
+- Set the ingestion function's CloudWatch log group to the Standard log class with 14-day retention.
+- Left log-group deletion protection off while this is a short-lived, developing lab workload.
+- Evidence added: sanitized retention configuration only; no log-group name, account identifier, request identifier, payload, or logs.
 - Next step: create and manually validate the normalization Lambda function.
 
 ## Future entry template
