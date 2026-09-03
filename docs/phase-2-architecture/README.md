@@ -31,7 +31,7 @@ flowchart LR
 | Data ingress | Outbound HTTPS retrieval from one public source; no public upload endpoint |
 | Raw storage | Private S3 bucket with Block Public Access enabled, ACLs disabled, bucket-owner-enforced ownership, versioning, and SSE-S3 encryption |
 | Data lifecycle | `raw/` objects expire after 30 days; noncurrent versions and incomplete multipart uploads are removed after 7 days |
-| Processing | Two dedicated Lambda execution roles: ingest can write only to the raw prefix; normalize can read that prefix and write normalized records; both have logging only beyond their assigned data access |
+| Processing | Two dedicated Lambda execution roles: ingest can write only to the raw prefix; normalize can read that prefix and batch-write normalized records; both have logging only beyond their assigned data access |
 | Data store | DynamoDB table with a `cve_id` string primary key, on-demand mode, AWS-owned encryption, and no secondary indexes |
 | Scheduling | One low-frequency scheduled ingestion run while the lab is developing |
 | Logging | CloudWatch Logs with a 14-day retention period |
@@ -80,7 +80,7 @@ The least-privilege execution roles were then established. No threat-intelligenc
 Two distinct Lambda-trusted execution roles were created for the planned functions. Both retain the AWS-managed basic execution policy for CloudWatch Logs and have no long-lived access keys.
 
 - The ingestion role has one inline permission: write objects only to the private S3 `raw/` prefix. It cannot read, list, or delete S3 objects.
-- The normalization role can read objects only from that same S3 prefix and write normalized records only to the indicator table. It has no scan, delete, or broad data-store permissions.
+- The normalization role can read objects only from that same S3 prefix and use `PutItem` or `BatchWriteItem` only on the indicator table. It has no scan, delete, or broad data-store permissions.
 - No administrative, broader S3 or DynamoDB, or cross-account permissions were attached.
 - Roles were tagged for project, environment, and component ownership.
 
@@ -108,3 +108,14 @@ The ingestion function was deployed with the dedicated ingestion role and valida
 
 The next implementation step is the normalization Lambda function. No normalized indicator records have been written yet.
 
+## Prepared normalization implementation
+
+The dependency-free normalization handler is source-controlled in [`src/normalize/`](../../src/normalize/). It is intentionally not configured with any live values in this repository.
+
+- Accepts S3 notification events only for the CISA KEV private raw-data prefix and validates the catalog before it writes indicators.
+- Keeps a compact, query-oriented set of fields keyed by `cve_id`, with source metadata and a reference to the protected raw object.
+- Uses idempotent DynamoDB batch writes to the existing table; reprocessing a raw object updates its CVE records rather than creating duplicates.
+- Requires the indicator table name through a Lambda environment variable configured in the console, not source code.
+- Requires only the already established S3 read and narrowly scoped DynamoDB `PutItem`/`BatchWriteItem` permissions.
+
+The next implementation step is to deploy and manually validate the normalization Lambda function. No normalized indicator records have been written yet.
