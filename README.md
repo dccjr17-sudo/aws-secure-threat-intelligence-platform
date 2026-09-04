@@ -34,16 +34,18 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 - Configured an S3 object-created trigger limited to the approved raw CISA KEV prefix and JSON files, then verified the complete ingest-to-normalize path through CloudWatch Logs.
 - Configured one enabled EventBridge Scheduler job to begin the daily ingestion run at 8:15 AM Pacific, with a dedicated scheduler invocation role and no flexible time window.
 
-**Preparing: Phase 3 — Finding Enrichment and Triage**
+**Completed: Phase 3 — Finding Enrichment and Triage Foundation**
 
-- Added a source-controlled, dependency-free enrichment handler that accepts one CVE-bearing finding and performs an exact read of the normalized indicator table.
-- The handler deliberately returns only compact KEV context, never scans or changes DynamoDB, and has not yet been deployed or connected to an event source.
+- Deployed and manually validated a source-controlled, dependency-free enrichment Lambda that accepts one CVE-bearing finding and performs an exact read of the normalized indicator table.
+- The handler returns only compact KEV context, never scans or changes DynamoDB, has no public endpoint, and retains operational logs for 14 days.
+- The function remains manual-only while the next detection-source and alerting design is defined; no EventBridge source or automated remediation has been enabled.
 
 ## Documentation map
 
 - [`docs/phase-0/`](docs/phase-0/) — sanitized record of the secure account foundation.
 - [`docs/phase-1-cost-guardrails/`](docs/phase-1-cost-guardrails/) — budget, anomaly-detection, and Free Tier visibility record.
 - [`docs/phase-2-architecture/`](docs/phase-2-architecture/) — approved low-cost serverless design and secure implementation sequence.
+- [`docs/phase-3-enrichment/`](docs/phase-3-enrichment/) — validated read-only finding-enrichment foundation and guardrails.
 - [`docs/lab-journal.md`](docs/lab-journal.md) — concise running log for future lab sessions.
 - [`src/ingest/`](src/ingest/) — dependency-free CISA KEV ingestion handler and deployment notes.
 - [`src/normalize/`](src/normalize/) — dependency-free CISA KEV normalization handler and deployment notes.
