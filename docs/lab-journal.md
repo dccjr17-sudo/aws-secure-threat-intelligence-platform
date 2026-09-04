@@ -96,6 +96,15 @@ Use this file for short, outcome-focused updates after each lab session. Do not 
 - Evidence added: source and sanitized deployment notes only; no live CVE value, table name, event, output, logs, or identifiers.
 - Next step: create the dedicated enrichment role, deploy the function, and perform one manual exact-key validation.
 
+## 2026-09-04 — Finding-enrichment foundation validated
+
+- Created a dedicated Lambda execution role with only CloudWatch Logs basic execution access and one inline `dynamodb:GetItem` permission scoped to the normalized indicator table.
+- Deployed the source-controlled enrichment handler with a console-only table-name environment variable; no public Function URL, VPC attachment, or write permission was configured.
+- Manually validated one known CISA KEV match and confirmed that the function returned a prioritize outcome with compact indicator context.
+- Set the enrichment function's CloudWatch log group to the Standard log class with 14-day retention and left deletion protection off for this developing lab workload.
+- Evidence added: sanitized validation record only; no selected CVE, table name, event payload, function identifier, output, logs, screenshots, or account identifier.
+- Next step: design a narrowly scoped detection source and email-only alert path before connecting the enrichment function to automatic events.
+
 ## Future entry template
 
 ```markdown
