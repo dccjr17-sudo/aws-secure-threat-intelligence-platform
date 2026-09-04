@@ -51,6 +51,11 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 - Verified the EventBridge rule changes through the free, regional CloudTrail Event History view.
 - Documenting a sanitized alert-response runbook and service-activation boundary without creating a CloudTrail trail, data store, or additional scanning service.
 
+**In progress: Phase 6 — Infrastructure-as-Code Readiness and Architecture**
+
+- Added a parameterized AWS SAM reference template that represents the serverless data path, least-privilege roles, schedule, alert route, and prepared Inspector event route.
+- Added a sanitized architecture diagram and deployment boundary; the template is not deployed and must not be applied to the existing manually built lab account.
+
 ## Documentation map
 
 - [`docs/phase-0/`](docs/phase-0/) — sanitized record of the secure account foundation.
@@ -59,10 +64,12 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 - [`docs/phase-3-enrichment/`](docs/phase-3-enrichment/) — validated read-only finding-enrichment foundation and guardrails.
 - [`docs/phase-4-event-driven-triage/`](docs/phase-4-event-driven-triage/) — controlled EventBridge-to-KEV alert flow and deferred Inspector integration boundary.
 - [`docs/phase-5-operations/`](docs/phase-5-operations/) — audit evidence, alert-response runbook, and zero-additional-service operating model.
+- [`docs/phase-6-iac-and-architecture/`](docs/phase-6-iac-and-architecture/) — architecture view and reference-only infrastructure-as-code readiness record.
 - [`docs/lab-journal.md`](docs/lab-journal.md) — concise running log for future lab sessions.
 - [`src/ingest/`](src/ingest/) — dependency-free CISA KEV ingestion handler and deployment notes.
 - [`src/normalize/`](src/normalize/) — dependency-free CISA KEV normalization handler and deployment notes.
 - [`src/enrich/`](src/enrich/) — dependency-free read-only CVE finding-enrichment handler and deployment notes.
+- [`infrastructure/`](infrastructure/) — parameterized reference-only AWS SAM blueprint; not a deployment record for the active lab.
 - [`images/`](images/) — intentional, redacted portfolio screenshots only.
 - [`resume/`](resume/) — resume bullets and interview talking points maintained as work progresses.
 
