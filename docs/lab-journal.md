@@ -115,6 +115,14 @@ Use this file for short, outcome-focused updates after each lab session. Do not 
 - Evidence added: sanitized source and outcome record only; no event payload, selected CVE, topic identifier, recipient, role name, account identifier, CloudTrail record, or screenshot.
 - Next step: complete the incident-response runbook and portfolio-safe architecture boundary.
 
+## 2026-09-04 — Infrastructure-as-code readiness documented
+
+- Added a parameterized AWS SAM reference template representing the secure raw-data path, normalized indicator table, purpose-limited Lambda roles, daily schedule, controlled event triage, prepared Inspector event path, and email-only KEV alerts.
+- Added a sanitized architecture diagram and documentation that distinguish the reusable reference design from the existing manually built lab environment.
+- Did not package, deploy, create a change set, import resources, create duplicate services, enable Inspector, create a CloudTrail trail, or change the live account.
+- Evidence added: reviewed source and text-only architecture record; no live identifiers, events, logs, screenshots, recipients, or account details.
+- Next step: complete static validation of the reference files and prepare a final portfolio review.
+
 ## Future entry template
 
 ```markdown
