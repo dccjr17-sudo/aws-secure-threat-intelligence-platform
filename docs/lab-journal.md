@@ -105,6 +105,16 @@ Use this file for short, outcome-focused updates after each lab session. Do not 
 - Evidence added: sanitized validation record only; no selected CVE, table name, event payload, function identifier, output, logs, screenshots, or account identifier.
 - Next step: design a narrowly scoped detection source and email-only alert path before connecting the enrichment function to automatic events.
 
+## 2026-09-04 — Event-driven KEV alert path validated
+
+- Extended the enrichment function to accept a direct CVE, a controlled EventBridge detail value, or the package-vulnerability CVE field used by Amazon Inspector finding events.
+- Added one exact-topic publish permission to the existing enrichment role and configured the alert topic only as a console environment variable.
+- Validated a controlled EventBridge event end to end: the event invoked enrichment, enrichment performed the exact indicator lookup, a known-exploited match was prioritized, and the existing email subscription received one alert.
+- Created a distinct EventBridge rule ready to route active Amazon Inspector package-vulnerability findings to enrichment. Amazon Inspector was not activated because this organization requires an explicit delegated-administrator design that is outside the lab's current scope.
+- Used free CloudTrail Event History to verify the successful EventBridge rule changes. No CloudTrail trail, data store, Inspector delegated administrator, Inspector scan, or automatic remediation was configured.
+- Evidence added: sanitized source and outcome record only; no event payload, selected CVE, topic identifier, recipient, role name, account identifier, CloudTrail record, or screenshot.
+- Next step: complete the incident-response runbook and portfolio-safe architecture boundary.
+
 ## Future entry template
 
 ```markdown
