@@ -64,5 +64,10 @@ Use an existing public CVE identifier from the normalized table for the first ma
 
 ## Validation status
 
-Source is prepared for deployment. The function must be deployed with the dedicated role and manually validated before any EventBridge source, notification workflow, or public interface is considered.
+The function was deployed with the dedicated enrichment role and manually validated with an existing normalized CISA KEV record.
+
+- The successful result returned a known-exploited match, a prioritize triage outcome, and compact indicator context.
+- The dedicated role required only the AWS-managed basic Lambda logging policy plus `dynamodb:GetItem` on the existing indicator table.
+- The function's CloudWatch log group uses the Standard log class with 14-day retention. Deletion protection remains off for this short-lived lab workload.
+- No EventBridge source, notification target, public Function URL, VPC attachment, write permission, raw-object location, or live test value is recorded here.
 
