@@ -1,0 +1,349 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >-
+  Reference-only SAM blueprint for the AWS Secure Threat Intelligence Platform.
+  Do not deploy this template into the existing manually built lab account.
+
+Parameters:
+  ProjectPrefix:
+    Type: String
+    Default: threat-intelligence-lab
+    AllowedPattern: '[a-z0-9-]+'
+    Description: Generic prefix for a future clean-room deployment.
+  RawPrefix:
+    Type: String
+    Default: raw/cisa-kev/
+    Description: S3 key prefix reserved for approved CISA KEV source snapshots.
+
+Resources:
+  RawDataBucket:
+    Type: AWS::S3::Bucket
+    DependsOn: AllowRawBucketToInvokeNormalize
+    Properties:
+      BucketName: !Sub '${ProjectPrefix}-${AWS::AccountId}-${AWS::Region}-raw'
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+          - Id: ExpireRawSnapshots
+            Prefix: raw/
+            Status: Enabled
+            ExpirationInDays: 30
+            NoncurrentVersionExpiration:
+              NoncurrentDays: 7
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 7
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      NotificationConfiguration:
+        LambdaConfigurations:
+          - Event: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: !Ref RawPrefix
+                  - Name: suffix
+                    Value: .json
+            Function: !GetAtt NormalizeFunction.Arn
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
+      Tags:
+        - Key: Project
+          Value: !Ref ProjectPrefix
+        - Key: DataClassification
+          Value: PublicThreatIntelligence
+
+  IndicatorTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: cve_id
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+        - AttributeName: cve_id
+          KeyType: HASH
+      SSESpecification:
+        SSEEnabled: true
+      TableClass: STANDARD
+      Tags:
+        - Key: Project
+          Value: !Ref ProjectPrefix
+        - Key: DataClassification
+          Value: PublicThreatIntelligence
+
+  PipelineAlertTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub '${ProjectPrefix}-pipeline-alerts'
+      Tags:
+        - Key: Project
+          Value: !Ref ProjectPrefix
+
+  IngestRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      Policies:
+        - PolicyName: WriteApprovedRawPrefix
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: s3:PutObject
+                Resource: !Sub 'arn:${AWS::Partition}:s3:::${ProjectPrefix}-${AWS::AccountId}-${AWS::Region}-raw/${RawPrefix}*'
+
+  NormalizeRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      Policies:
+        - PolicyName: ReadApprovedRawPrefix
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: s3:GetObject
+                Resource: !Sub 'arn:${AWS::Partition}:s3:::${ProjectPrefix}-${AWS::AccountId}-${AWS::Region}-raw/${RawPrefix}*'
+        - PolicyName: WriteNormalizedIndicators
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:BatchWriteItem
+                Resource: !GetAtt IndicatorTable.Arn
+
+  EnrichRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      Policies:
+        - PolicyName: ReadOneNormalizedIndicator
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: dynamodb:GetItem
+                Resource: !GetAtt IndicatorTable.Arn
+        - PolicyName: PublishKnownExploitedAlerts
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: sns:Publish
+                Resource: !Ref PipelineAlertTopic
+
+  SchedulerInvokeRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: scheduler.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: InvokeIngestOnly
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: lambda:InvokeFunction
+                Resource: !GetAtt IngestFunction.Arn
+
+  IngestFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Architectures:
+        - x86_64
+      CodeUri: ../src/ingest/
+      Description: Retrieves and stores a protected CISA KEV snapshot.
+      Environment:
+        Variables:
+          RAW_BUCKET: !Ref RawDataBucket
+          RAW_PREFIX: !Ref RawPrefix
+      FunctionName: !Sub '${ProjectPrefix}-ingest-kev'
+      Handler: lambda_function.lambda_handler
+      MemorySize: 256
+      Role: !GetAtt IngestRole.Arn
+      Runtime: python3.14
+      Timeout: 30
+      Tags:
+        Project: !Ref ProjectPrefix
+
+  NormalizeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Architectures:
+        - x86_64
+      CodeUri: ../src/normalize/
+      Description: Normalizes approved CISA KEV snapshots into CVE-keyed records.
+      Environment:
+        Variables:
+          INDICATOR_TABLE: !Ref IndicatorTable
+          RAW_PREFIX: !Ref RawPrefix
+      FunctionName: !Sub '${ProjectPrefix}-normalize-kev'
+      Handler: lambda_function.lambda_handler
+      MemorySize: 256
+      Role: !GetAtt NormalizeRole.Arn
+      Runtime: python3.14
+      Timeout: 30
+      Tags:
+        Project: !Ref ProjectPrefix
+
+  EnrichFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Architectures:
+        - x86_64
+      CodeUri: ../src/enrich/
+      Description: Enriches one CVE finding and alerts only for KEV matches.
+      Environment:
+        Variables:
+          ALERT_TOPIC_ARN: !Ref PipelineAlertTopic
+          INDICATOR_TABLE: !Ref IndicatorTable
+      FunctionName: !Sub '${ProjectPrefix}-enrich-finding'
+      Handler: lambda_function.lambda_handler
+      MemorySize: 128
+      Role: !GetAtt EnrichRole.Arn
+      Runtime: python3.14
+      Timeout: 10
+      Tags:
+        Project: !Ref ProjectPrefix
+
+  IngestLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${IngestFunction}'
+      RetentionInDays: 14
+
+  NormalizeLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${NormalizeFunction}'
+      RetentionInDays: 14
+
+  EnrichLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${EnrichFunction}'
+      RetentionInDays: 14
+
+  AllowRawBucketToInvokeNormalize:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref NormalizeFunction
+      Principal: s3.amazonaws.com
+      SourceAccount: !Ref AWS::AccountId
+
+  DailyIngestSchedule:
+    Type: AWS::Scheduler::Schedule
+    Properties:
+      FlexibleTimeWindow:
+        Mode: 'OFF'
+      ScheduleExpression: cron(15 8 * * ? *)
+      ScheduleExpressionTimezone: America/Los_Angeles
+      Target:
+        Arn: !GetAtt IngestFunction.Arn
+        RoleArn: !GetAtt SchedulerInvokeRole.Arn
+
+  ControlledFindingRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Sends only the controlled lab finding shape to enrichment.
+      EventPattern:
+        source:
+          - ti-lab.finding
+        detail-type:
+          - CVE Finding
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt EnrichFunction.Arn
+          Id: EnrichControlledFinding
+
+  AllowEventBridgeControlledFinding:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref EnrichFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt ControlledFindingRule.Arn
+
+  InspectorPackageFindingRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Prepared route for active Amazon Inspector package findings.
+      EventPattern:
+        source:
+          - aws.inspector2
+        detail-type:
+          - Inspector2 Finding
+        detail:
+          type:
+            - PACKAGE_VULNERABILITY
+          status:
+            - ACTIVE
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt EnrichFunction.Arn
+          Id: EnrichInspectorPackageFinding
+
+  AllowEventBridgeInspectorFinding:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref EnrichFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt InspectorPackageFindingRule.Arn
+
+Outputs:
+  RawDataBucketName:
+    Description: Generated name of the private raw-data bucket.
+    Value: !Ref RawDataBucket
+  IndicatorTableName:
+    Description: Generated name of the normalized indicator table.
+    Value: !Ref IndicatorTable
+  AlertTopicArn:
+    Description: ARN of the private email-notification topic.
+    Value: !Ref PipelineAlertTopic
+  EnrichFunctionName:
+    Description: Name of the read-only enrichment function.
+    Value: !Ref EnrichFunction
+
