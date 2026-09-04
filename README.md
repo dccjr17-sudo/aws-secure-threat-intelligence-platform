@@ -38,7 +38,18 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 
 - Deployed and manually validated a source-controlled, dependency-free enrichment Lambda that accepts one CVE-bearing finding and performs an exact read of the normalized indicator table.
 - The handler returns only compact KEV context, never scans or changes DynamoDB, has no public endpoint, and retains operational logs for 14 days.
-- The function remains manual-only while the next detection-source and alerting design is defined; no EventBridge source or automated remediation has been enabled.
+
+**Completed: Phase 4 — Event-Driven KEV Triage and Alerting**
+
+- Extended the enrichment handler to accept controlled EventBridge findings and Amazon Inspector-compatible package-vulnerability events.
+- Added a narrowly scoped email-only alert for known-exploited matches, using an existing private notification topic configured only in the Lambda console.
+- Validated the complete controlled path: EventBridge event, exact DynamoDB KEV lookup, priority decision, and email notification.
+- Added a separate EventBridge rule prepared for active Amazon Inspector package-vulnerability findings; Amazon Inspector itself was not activated.
+
+**In progress: Phase 5 — Operations and Audit Readiness**
+
+- Verified the EventBridge rule changes through the free, regional CloudTrail Event History view.
+- Documenting a sanitized alert-response runbook and service-activation boundary without creating a CloudTrail trail, data store, or additional scanning service.
 
 ## Documentation map
 
@@ -46,6 +57,8 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 - [`docs/phase-1-cost-guardrails/`](docs/phase-1-cost-guardrails/) — budget, anomaly-detection, and Free Tier visibility record.
 - [`docs/phase-2-architecture/`](docs/phase-2-architecture/) — approved low-cost serverless design and secure implementation sequence.
 - [`docs/phase-3-enrichment/`](docs/phase-3-enrichment/) — validated read-only finding-enrichment foundation and guardrails.
+- [`docs/phase-4-event-driven-triage/`](docs/phase-4-event-driven-triage/) — controlled EventBridge-to-KEV alert flow and deferred Inspector integration boundary.
+- [`docs/phase-5-operations/`](docs/phase-5-operations/) — audit evidence, alert-response runbook, and zero-additional-service operating model.
 - [`docs/lab-journal.md`](docs/lab-journal.md) — concise running log for future lab sessions.
 - [`src/ingest/`](src/ingest/) — dependency-free CISA KEV ingestion handler and deployment notes.
 - [`src/normalize/`](src/normalize/) — dependency-free CISA KEV normalization handler and deployment notes.
@@ -63,7 +76,7 @@ This repository must never contain real credentials, account identifiers, privat
 2. Secure baseline services and least-privilege access
 3. Threat-intelligence data ingestion and normalization
 4. Detection, alerting, investigation, and response workflows
-5. Portfolio polish, architecture diagrams, and final resume evidence
+5. Operations, audit readiness, portfolio polish, architecture diagrams, and final resume evidence
 
 ## Portfolio note
 
