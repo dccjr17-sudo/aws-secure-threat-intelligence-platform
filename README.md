@@ -46,15 +46,21 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 - Validated the complete controlled path: EventBridge event, exact DynamoDB KEV lookup, priority decision, and email notification.
 - Added a separate EventBridge rule prepared for active Amazon Inspector package-vulnerability findings; Amazon Inspector itself was not activated.
 
-**In progress: Phase 5 — Operations and Audit Readiness**
+**Completed: Phase 5 — Operations and Audit Readiness**
 
 - Verified the EventBridge rule changes through the free, regional CloudTrail Event History view.
-- Documenting a sanitized alert-response runbook and service-activation boundary without creating a CloudTrail trail, data store, or additional scanning service.
+- Added a sanitized alert-response runbook and service-activation boundary without creating a CloudTrail trail, data store, or additional scanning service.
 
-**In progress: Phase 6 — Infrastructure-as-Code Readiness and Architecture**
+**Completed: Phase 6 — Infrastructure-as-Code Readiness and Architecture**
 
 - Added a parameterized AWS SAM reference template that represents the serverless data path, least-privilege roles, schedule, alert route, and prepared Inspector event route.
 - Added a sanitized architecture diagram and deployment boundary; the template is not deployed and must not be applied to the existing manually built lab account.
+
+**Completed: Phase 7 — Security Operations Dashboard and Response Runbook**
+
+- Created one CloudWatch security-operations dashboard using existing service metrics only: Lambda invocations, Lambda errors, and the state of the two existing pipeline error alarms.
+- Reviewed a one-week view to confirm historical pipeline activity, zero recorded function errors for the displayed period, and healthy alarm states.
+- Documented a safe, console-first investigation sequence for future pipeline alerts; no custom metrics, additional alarms, paid scanning services, or automated remediation were added.
 
 ## Documentation map
 
@@ -65,6 +71,7 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 - [`docs/phase-4-event-driven-triage/`](docs/phase-4-event-driven-triage/) — controlled EventBridge-to-KEV alert flow and deferred Inspector integration boundary.
 - [`docs/phase-5-operations/`](docs/phase-5-operations/) — audit evidence, alert-response runbook, and zero-additional-service operating model.
 - [`docs/phase-6-iac-and-architecture/`](docs/phase-6-iac-and-architecture/) — architecture view and reference-only infrastructure-as-code readiness record.
+- [`docs/phase-7-security-operations/`](docs/phase-7-security-operations/) — dashboard design, alert-investigation workflow, and cost-control boundary.
 - [`docs/lab-journal.md`](docs/lab-journal.md) — concise running log for future lab sessions.
 - [`src/ingest/`](src/ingest/) — dependency-free CISA KEV ingestion handler and deployment notes.
 - [`src/normalize/`](src/normalize/) — dependency-free CISA KEV normalization handler and deployment notes.
