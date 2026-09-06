@@ -141,6 +141,13 @@ Use this file for short, outcome-focused updates after each lab session. Do not 
 - Evidence added: text-only validation and design record; no policy JSON, resource identifier, account identifier, console URL, screenshot, or live event data.
 - Next step: perform a final portfolio review or consider an optional resilience feature only after a separate cost review.
 
+## 2026-09-06 — Portfolio readiness completed
+
+- Added a concise project brief, evidence map, resume-bullet candidates, and interview talking points based only on completed lab work.
+- Completed a final documentation privacy review and retained the text-only evidence approach; no screenshots, raw logs, policy JSON, account identifiers, recipients, or live configuration values were added.
+- Documented the lab's limits honestly, including the absence of a deployed infrastructure template, dead-letter queue, automated remediation, production workload inventory, and active Inspector integration.
+- Next step: treat the current lab as complete; evaluate any optional resilience feature through a separate cost and governance review.
+
 ## Future entry template
 
 ```markdown
