@@ -68,6 +68,12 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 - Confirmed that the reviewed policies preserve action- and resource-level separation for raw-data writes, raw-data reads, normalized-indicator writes, exact indicator reads, and alert publishing.
 - Added a sanitized threat model covering assets, trust boundaries, likely threats, existing mitigations, residual risks, and the deliberate boundary against enabling new analyzers or billable custom policy checks.
 
+**Completed: Phase 9 — Portfolio Readiness**
+
+- Added a concise project brief, evidence map, role-focused resume bullets, and interview talking points grounded only in validated lab outcomes.
+- Completed a final documentation privacy review; the portfolio package contains no live account identifiers, policy JSON, raw logs, screenshots, email recipients, or configuration values.
+- Recorded the lab's deliberate limitations and optional next steps so the portfolio accurately distinguishes a hands-on lab from a production deployment.
+
 ## Documentation map
 
 - [`docs/phase-0/`](docs/phase-0/) — sanitized record of the secure account foundation.
@@ -79,7 +85,9 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 - [`docs/phase-6-iac-and-architecture/`](docs/phase-6-iac-and-architecture/) — architecture view and reference-only infrastructure-as-code readiness record.
 - [`docs/phase-7-security-operations/`](docs/phase-7-security-operations/) — dashboard design, alert-investigation workflow, and cost-control boundary.
 - [`docs/phase-8-least-privilege-and-threat-model/`](docs/phase-8-least-privilege-and-threat-model/) — policy-validation record, threat model, and residual-risk register.
+- [`docs/phase-9-portfolio-readiness/`](docs/phase-9-portfolio-readiness/) — evidence map, final privacy review, and honest scope boundary.
 - [`docs/lab-journal.md`](docs/lab-journal.md) — concise running log for future lab sessions.
+- [`PORTFOLIO.md`](PORTFOLIO.md) — concise project brief for a hiring manager or interview conversation.
 - [`src/ingest/`](src/ingest/) — dependency-free CISA KEV ingestion handler and deployment notes.
 - [`src/normalize/`](src/normalize/) — dependency-free CISA KEV normalization handler and deployment notes.
 - [`src/enrich/`](src/enrich/) — dependency-free read-only CVE finding-enrichment handler and deployment notes.
