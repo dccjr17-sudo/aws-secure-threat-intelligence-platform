@@ -62,6 +62,12 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 - Reviewed a one-week view to confirm historical pipeline activity, zero recorded function errors for the displayed period, and healthy alarm states.
 - Documented a safe, console-first investigation sequence for future pipeline alerts; no custom metrics, additional alarms, paid scanning services, or automated remediation were added.
 
+**Completed: Phase 8 — Least-Privilege Assurance and Threat Model**
+
+- Reviewed the custom inline policies used by the ingestion, normalization, and enrichment functions with IAM Access Analyzer basic policy validation; the review produced no security findings, errors, warnings, or suggestions.
+- Confirmed that the reviewed policies preserve action- and resource-level separation for raw-data writes, raw-data reads, normalized-indicator writes, exact indicator reads, and alert publishing.
+- Added a sanitized threat model covering assets, trust boundaries, likely threats, existing mitigations, residual risks, and the deliberate boundary against enabling new analyzers or billable custom policy checks.
+
 ## Documentation map
 
 - [`docs/phase-0/`](docs/phase-0/) — sanitized record of the secure account foundation.
@@ -72,6 +78,7 @@ This hands-on AWS lab builds a secure foundation for a future threat-intelligenc
 - [`docs/phase-5-operations/`](docs/phase-5-operations/) — audit evidence, alert-response runbook, and zero-additional-service operating model.
 - [`docs/phase-6-iac-and-architecture/`](docs/phase-6-iac-and-architecture/) — architecture view and reference-only infrastructure-as-code readiness record.
 - [`docs/phase-7-security-operations/`](docs/phase-7-security-operations/) — dashboard design, alert-investigation workflow, and cost-control boundary.
+- [`docs/phase-8-least-privilege-and-threat-model/`](docs/phase-8-least-privilege-and-threat-model/) — policy-validation record, threat model, and residual-risk register.
 - [`docs/lab-journal.md`](docs/lab-journal.md) — concise running log for future lab sessions.
 - [`src/ingest/`](src/ingest/) — dependency-free CISA KEV ingestion handler and deployment notes.
 - [`src/normalize/`](src/normalize/) — dependency-free CISA KEV normalization handler and deployment notes.
