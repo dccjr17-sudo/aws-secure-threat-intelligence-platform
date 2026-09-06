@@ -50,3 +50,47 @@ For each phase, add:
 - One or two results-oriented resume bullets
 - The security decision and its rationale
 - A limitation or follow-up to discuss honestly in interviews
+
+## Project-level portfolio package
+
+### Evidence-backed summary
+
+Built and documented a private AWS security-engineering lab that ingests public CISA Known Exploited Vulnerabilities (KEV) data, normalizes indicators, enriches controlled security findings through exact-key lookups, and prioritizes known-exploited matches through an event-driven alert path. The lab pairs least-privilege controls with operational dashboards, alert response documentation, infrastructure-as-code readiness, and a sanitized threat model.
+
+### Selected resume-bullet candidates
+
+- Designed and validated a serverless AWS threat-intelligence pipeline that ingests public CISA KEV data, normalizes CVE indicators, and enriches controlled findings through exact-key lookups in DynamoDB.
+- Implemented event-driven KEV prioritization with Amazon EventBridge, AWS Lambda, and a bounded email-only notification path; validated the controlled finding-to-alert workflow end to end.
+- Applied least privilege through separate Lambda execution roles with action- and resource-scoped access, then reviewed four custom policies with IAM Access Analyzer basic validation and recorded zero findings.
+- Built low-overhead security operations visibility with CloudWatch function metrics, error alarms, a saved dashboard, and a console-first alert investigation runbook.
+- Produced a parameterized, reference-only AWS SAM blueprint and threat model that document trust boundaries, residual risks, and cost-aware decisions without exposing live cloud configuration.
+
+### Skills demonstrated
+
+- AWS IAM Identity Center, IAM role design, policy validation, and short-lived federated administration
+- Amazon S3, DynamoDB, AWS Lambda, Amazon EventBridge, EventBridge Scheduler, Amazon SNS, and Amazon CloudWatch
+- Python serverless development, event-driven architecture, exact-key data access, and safe notification design
+- CloudTrail Event History review, cost guardrails, security documentation, threat modeling, and privacy-safe evidence handling
+
+### Interview talking points
+
+**How would you summarize the project?**
+
+Explain the flow from public KEV feed to private raw storage, normalized CVE indicators, controlled enrichment, and a priority alert. Emphasize that the project is a lab, while the design choices mirror security-engineering concerns: least privilege, idempotency, observability, and privacy-safe evidence.
+
+**How did you implement least privilege?**
+
+Describe the separation of ingestion, normalization, enrichment, and alert publishing into distinct roles. Explain that permissions were limited by action and target resource, enrichment performs an exact-key read rather than a scan, and the reviewed custom policies produced no IAM Access Analyzer basic-validation findings.
+
+**How would you investigate an alert?**
+
+Start with the CloudWatch alarm state and dashboard, identify the affected function and time window, review only the matching console log entry, and use CloudTrail Event History if a configuration change is suspected. Avoid exporting or committing sensitive records.
+
+**Why was Inspector not activated?**
+
+The account required an explicit organization-level delegated-administrator decision. The lab prepared an event route but did not enable a scanner without a clear governance and cost decision. This demonstrates deliberate scope control rather than treating a trial as inherently free.
+
+**What would you improve for production?**
+
+Add a dead-letter and retry-analysis design, a formal asset inventory and ownership model, peer-reviewed and deployed infrastructure-as-code, controlled integration testing, and an approved incident/ticket workflow. Keep these as future improvements, not completed claims.
+
