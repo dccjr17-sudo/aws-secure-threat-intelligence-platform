@@ -121,7 +121,16 @@ Use this file for short, outcome-focused updates after each lab session. Do not 
 - Added a sanitized architecture diagram and documentation that distinguish the reusable reference design from the existing manually built lab environment.
 - Did not package, deploy, create a change set, import resources, create duplicate services, enable Inspector, create a CloudTrail trail, or change the live account.
 - Evidence added: reviewed source and text-only architecture record; no live identifiers, events, logs, screenshots, recipients, or account details.
-- Next step: complete static validation of the reference files and prepare a final portfolio review.
+- Next step: build a low-overhead security-operations dashboard using only existing service metrics and alarms.
+
+## 2026-09-06 — Security operations dashboard and response runbook completed
+
+- Created one CloudWatch dashboard using existing Lambda invocation and error metrics for ingestion, normalization, and enrichment, plus the state of the two existing pipeline error alarms.
+- Reviewed a one-week view to confirm historical pipeline activity, zero recorded function errors for the displayed period, and both pipeline error alarms in the OK state.
+- Recorded an alarm-investigation workflow that starts with the alarm state, narrows to the affected function, and uses existing logs and CloudTrail Event History without exporting sensitive records.
+- Did not add custom metrics, new alarms, a CloudTrail trail, a data store, a scanning service, or automatic remediation. The dashboard was explicitly saved because dashboard autosave is disabled.
+- Evidence added: text-only dashboard and runbook record; no screenshots, account identifiers, logs, payloads, recipients, or live resource names.
+- Next step: review the complete portfolio evidence set and identify one optional advanced feature only after a cost and governance review.
 
 ## Future entry template
 
