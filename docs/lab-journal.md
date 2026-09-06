@@ -132,6 +132,15 @@ Use this file for short, outcome-focused updates after each lab session. Do not 
 - Evidence added: text-only dashboard and runbook record; no screenshots, account identifiers, logs, payloads, recipients, or live resource names.
 - Next step: review the complete portfolio evidence set and identify one optional advanced feature only after a cost and governance review.
 
+## 2026-09-06 — Least-privilege assurance and threat model completed
+
+- Reviewed the custom inline policies for the ingestion, normalization, and enrichment roles using IAM Access Analyzer basic policy validation in the console.
+- The four reviewed policy documents returned zero security findings, errors, warnings, and suggestions. The review did not modify or save any policy.
+- Confirmed the intended separation of duties: raw-data write, raw-data read, normalized-indicator write, exact indicator read, and alert publish remain action- and resource-scoped.
+- Added a sanitized threat model and residual-risk register for the existing architecture. No access analyzer, custom policy check, automated remediation, or additional security service was created.
+- Evidence added: text-only validation and design record; no policy JSON, resource identifier, account identifier, console URL, screenshot, or live event data.
+- Next step: perform a final portfolio review or consider an optional resilience feature only after a separate cost review.
+
 ## Future entry template
 
 ```markdown
